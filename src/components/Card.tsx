@@ -3,31 +3,39 @@ import {
   Image,
   ImageSourcePropType,
   StyleSheet,
+  TouchableWithoutFeedback,
+  TouchableWithoutFeedbackProps,
   View,
-  ViewProps,
 } from "react-native";
 import { colors } from "../constants/colors";
 import Text from "./Text";
 
-export interface CardProps extends ViewProps {
+export interface CardProps extends TouchableWithoutFeedbackProps {
   title?: string;
   subTitle?: string;
   image: ImageSourcePropType;
 }
 
-const Card: React.FC<CardProps> = ({ title = "", subTitle = "", image }) => {
+const Card: React.FC<CardProps> = ({
+  title = "",
+  subTitle = "",
+  image,
+  onPress,
+}) => {
   return (
-    <View style={styles.card}>
-      <Image style={styles.image} source={image} />
-      <View style={styles.detailContainer}>
-        <Text style={styles.title} numberOfLines={1}>
-          {title}
-        </Text>
-        <Text style={styles.subTitle} numberOfLines={1}>
-          {subTitle}
-        </Text>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={styles.card}>
+        <Image style={styles.image} source={image} />
+        <View style={styles.detailContainer}>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          <Text style={styles.subTitle} numberOfLines={1}>
+            {subTitle}
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

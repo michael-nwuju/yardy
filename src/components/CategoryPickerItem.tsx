@@ -1,17 +1,22 @@
 import React from "react";
 import { PickerItemProps } from "./PickerItem";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import Icon from "./Icon";
 import Text from "./Text";
 
 export interface CategoryPickerItemProps extends PickerItemProps {}
 
-const CategoryPickerItem: React.FC<CategoryPickerItemProps> = ({ item }) => {
+const CategoryPickerItem: React.FC<CategoryPickerItemProps> = ({
+  item,
+  onPress,
+}) => {
   return (
-    <View style={styles.container}>
-      <Icon {...item.icon} size={80} name={item.icon?.name || "loading"} />
-      <Text style={styles.label}>{item.label}</Text>
-    </View>
+    <TouchableWithoutFeedback onPress={onPress}>
+      <View style={styles.container}>
+        <Icon {...item.icon} size={80} name={item.icon?.name || "loading"} />
+        <Text style={styles.label}>{item.label}</Text>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

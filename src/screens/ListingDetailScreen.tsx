@@ -3,23 +3,29 @@ import { Image, StyleSheet, View } from "react-native";
 import Text from "../components/Text";
 import { colors } from "../constants/colors";
 import Avatar from "../components/Avatar";
+import Screen from "../components/Screen";
+import { useRoute } from "@react-navigation/native";
 
 const ListingDetailScreen: React.FC = () => {
+  const route = useRoute();
+  const params = route.params as any;
   return (
-    <View>
-      <Image style={styles.image} source={require("../assets/chair.jpg")} />
-      <View style={styles.detailContainer}>
-        <Text style={styles.title}>Red Jacket For Sale</Text>
-        <Text style={styles.price}>$100</Text>
-        <View style={styles.userContainer}>
-          <Avatar
-            title="Michael Nwuju"
-            subTitle="2 listings"
-            image={{ uri: "https://picsum.photos/70/70" }}
-          />
+    <Screen>
+      <View>
+        <Image style={styles.image} source={{ uri: params.image }} />
+        <View style={styles.detailContainer}>
+          <Text style={styles.title}>{params.title}</Text>
+          <Text style={styles.price}>{params.price}</Text>
+          <View style={styles.userContainer}>
+            <Avatar
+              title="Michael Nwuju"
+              subTitle="2 listings"
+              image={{ uri: "https://picsum.photos/70/70" }}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </Screen>
   );
 };
 

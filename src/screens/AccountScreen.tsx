@@ -5,6 +5,9 @@ import { colors } from "../constants/colors";
 import Icon from "../components/Icon";
 import { IconName } from "../types/icon.type";
 import ItemSeparator from "../components/ItemSeparator";
+import Screen from "../components/Screen";
+import { navigation } from "../constants/navigation";
+import { useNavigation } from "@react-navigation/native";
 
 const menuItems = [
   {
@@ -13,6 +16,7 @@ const menuItems = [
       name: "format-list-bulleted" as IconName,
       backgroundColor: colors.primary,
     },
+    targetScreen: navigation.listings,
   },
   {
     title: "My Messages",
@@ -20,42 +24,47 @@ const menuItems = [
       name: "email" as IconName,
       backgroundColor: colors.secondary,
     },
+    targetScreen: navigation.messages,
   },
 ];
 
 const AccountScreen: React.FC = () => {
+  const { navigate } = useNavigation();
   return (
-    <View style={styles.screen}>
-      <View style={styles.container}>
+    <Screen>
+      <View style={styles.screen}>
+        <View style={styles.container}>
+          <Avatar
+            title="Michael Nwuju"
+            subTitle="michaelnwuju213@gmail.com"
+            image={{ uri: "https://picsum.photos/200/300" }}
+          />
+        </View>
+        <View style={styles.container}>
+          <FlatList
+            data={menuItems}
+            keyExtractor={item => item.title}
+            renderItem={({ item }) => (
+              <Avatar
+                title={item.title}
+                IconComponent={
+                  <Icon
+                    name={item.icon.name}
+                    backgroundColor={item.icon.backgroundColor}
+                  />
+                }
+                onPress={() => navigate(item.targetScreen as never)}
+              />
+            )}
+            ItemSeparatorComponent={ItemSeparator}
+          />
+        </View>
         <Avatar
-          title="Michael Nwuju"
-          subTitle="michaelnwuju213@gmail.com"
-          image={{ uri: "https://picsum.photos/200/300" }}
+          title="Log out"
+          IconComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
         />
       </View>
-      <View style={styles.container}>
-        <FlatList
-          data={menuItems}
-          keyExtractor={item => item.title}
-          renderItem={({ item }) => (
-            <Avatar
-              title={item.title}
-              IconComponent={
-                <Icon
-                  name={item.icon.name}
-                  backgroundColor={item.icon.backgroundColor}
-                />
-              }
-            />
-          )}
-          ItemSeparatorComponent={ItemSeparator}
-        />
-      </View>
-      <Avatar
-        title="Log out"
-        IconComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
-      />
-    </View>
+    </Screen>
   );
 };
 

@@ -1,39 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import Card from "../components/Card";
 import { toCurrency } from "../utilities/to-currency";
 import { colors } from "../constants/colors";
-
-const listings = [
-  {
-    id: 1,
-    price: 100,
-    title: "Red Jacket for sale",
-    image: "https://picsum.photos/300/300",
-  },
-  {
-    id: 2,
-    price: 1000,
-    title: "Couch in great condition",
-    image: "https://picsum.photos/200/300",
-  },
-];
+import Screen from "../components/Screen";
+import { useNavigation } from "@react-navigation/native";
+import { navigation } from "../constants/navigation";
+import { getListings } from "../api/listings";
 
 const ListingsScreen: React.FC = () => {
+  const [listings, setListings] = useState<any[]>([]);
+  const { navigate } = useNavigation();
+
+  const loadListings = async () => {
+    const { data, ok } = await getListings();
+
+    if (ok) {
+      setListings(data as any[]);
+    }
+  };
+
+  useEffect(() => {
+    loadListings();
+  }, []);
+
   return (
-    <View style={styles.screen}>
-      <FlatList
-        data={listings}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <Card
-            title={item.title}
-            subTitle={toCurrency(item.price)}
-            image={{ uri: item.image }}
-          />
-        )}
-      />
-    </View>
+    <Screen>
+      <View style={styles.screen}>
+        <FlatList
+          data={listings}
+          keyExtractor={item => item.id.toString()}
+          renderItem={({ item }) => (
+            <Card
+              title={item.title}
+              subTitle={toCurrency(item.price)}
+              image={{ uri: item.images?.[0]?.url }}
+              onPress={() =>
+                navigate(navigation.listingDetail as never, item as never)
+              }
+            />
+          )}
+        />
+      </View>
+    </Screen>
   );
 };
 
