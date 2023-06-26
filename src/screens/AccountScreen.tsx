@@ -8,6 +8,8 @@ import ItemSeparator from "../components/ItemSeparator";
 import Screen from "../components/Screen";
 import { navigation } from "../constants/navigation";
 import { useNavigation } from "@react-navigation/native";
+import * as authStorage from "../auth/storage";
+import useAuthContext from "../hooks/useAuthContext";
 
 const menuItems = [
   {
@@ -29,15 +31,18 @@ const menuItems = [
 ];
 
 const AccountScreen: React.FC = () => {
+  const { user, logOut } = useAuthContext();
+
   const { navigate } = useNavigation();
+
   return (
     <Screen>
       <View style={styles.screen}>
         <View style={styles.container}>
           <Avatar
-            title="Michael Nwuju"
-            subTitle="michaelnwuju213@gmail.com"
-            image={{ uri: "https://picsum.photos/200/300" }}
+            title={user?.name || ""}
+            subTitle={user?.email || ""}
+            image={require("../assets/mosh.jpg")}
           />
         </View>
         <View style={styles.container}>
@@ -61,6 +66,7 @@ const AccountScreen: React.FC = () => {
         </View>
         <Avatar
           title="Log out"
+          onPress={logOut}
           IconComponent={<Icon name="logout" backgroundColor="#ffe66d" />}
         />
       </View>

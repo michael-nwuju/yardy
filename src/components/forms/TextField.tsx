@@ -8,7 +8,7 @@ export interface TextFieldProps extends InputProps {
 }
 
 const TextField: React.FC<TextFieldProps> = ({ name, ...props }) => {
-  const { values, errors, setFieldTouched, handleChange, touched } =
+  const { values, errors, setFieldTouched, setFieldValue, touched } =
     useFormikContext();
 
   return (
@@ -17,7 +17,7 @@ const TextField: React.FC<TextFieldProps> = ({ name, ...props }) => {
         {...props}
         value={(values as any)[name]}
         onBlur={() => setFieldTouched(name)}
-        onChangeText={handleChange(name)}
+        onChangeText={text => setFieldValue(name, text)}
       />
       <ErrorMessage
         error={(errors as any)[name]}

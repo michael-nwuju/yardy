@@ -1,10 +1,22 @@
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import * as yup from "yup";
-import { TextField, SubmitButton, Form } from "../components/forms";
+import {
+  TextField,
+  SubmitButton,
+  Form,
+  ErrorMessage,
+} from "../components/forms";
 import Screen from "../components/Screen";
+import { login } from "../api/auth";
+import useApi from "../hooks/useApi";
+import useAuthContext from "../hooks/useAuthContext";
 
 const LoginScreen = () => {
+  const { logIn } = useAuthContext();
+
+  const { request: loginUser, error } = useApi({ api: login });
+
   return (
     <Screen>
       <View style={styles.container}>
@@ -18,8 +30,15 @@ const LoginScreen = () => {
             email: yup.string().required().email().label("Email"),
             password: yup.string().required().label("Password"),
           })}
-          onSubmit={values => console.log({ values })}
+          onSubmit={async values => {
+            const data = await loginUser(values);
+
+            if (data) {
+              logIn(data);
+            }
+          }}
         >
+          <ErrorMessage error="Invalid credentials" touched={error} />
           <TextField
             name="email"
             icon="email"

@@ -8,11 +8,15 @@ import ListingEditScreen from "../screens/ListingEditScreen";
 import FeedNavigator from "./FeedNavigator";
 import AccountNavigator from "./AccountNavigator";
 import NewListingButton from "../components/NewListingButton";
+import useNotifications from "../hooks/useNotifications";
 
 export interface AppNavigatorProps {}
 
 const AppNavigator: React.FC<AppNavigatorProps> = () => {
   const Tab = createBottomTabNavigator();
+
+  useNotifications();
+
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen
@@ -26,10 +30,10 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         {() => <FeedNavigator />}
       </Tab.Screen>
       <Tab.Screen
-        options={({ navigation: navigate }) => ({
+        options={({ navigation: { navigate } }) => ({
           tabBarButton: ({}) => (
             <NewListingButton
-              onPress={() => navigate.navigate(navigation.listingEdit)}
+              onPress={() => navigate(navigation.listingEdit)}
             />
           ),
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import * as yup from "yup";
 
@@ -9,6 +9,8 @@ import { IconName } from "../types/icon.type";
 import FormImagePicker from "../components/forms/FormImagePicker";
 import useLocation from "../hooks/useLocation";
 import Screen from "../components/Screen";
+import { addListing } from "../api/listings";
+import UploadScreen from "./UploadScreen";
 
 const validationSchema = yup.object().shape({
   title: yup.string().required().min(1).label("Title"),
@@ -86,10 +88,17 @@ const categories: PickerItemType[] = init.map(category => ({
 
 function ListingEditScreen() {
   const location = useLocation();
+  const [progress, setProgress] = useState(0);
+  const [uploadVisible, setUploadVisible] = useState(false);
 
   return (
     <Screen>
       <View style={styles.container}>
+        <UploadScreen
+          progress={progress}
+          visible={uploadVisible}
+          onAnimationFinish={() => setUploadVisible(false)}
+        />
         <Form
           initialValues={{
             title: "",
@@ -98,7 +107,48 @@ function ListingEditScreen() {
             category: null,
             images: [],
           }}
-          onSubmit={values => console.log({ location })}
+          onSubmit={async (values, { resetForm }) => {
+            try {
+              setProgress(0);
+              setUploadVisible(true);
+              const input = new FormData();
+
+              input.append("title", values.title);
+              input.append("price", values.price);
+              input.append("categoryId", (values.category as any)?.value);
+              input.append("description", values.description);
+
+              values.images.forEach((image: string, index: number) => {
+                input.append("images", {
+                  name: `image${index}`,
+                  type: "image/jpeg",
+                  uri: image,
+                } as any);
+              });
+
+              if (location) {
+                input.append("location", JSON.stringify(location));
+              }
+
+              console.log({ values, location });
+
+              const { ok } = await addListing(
+                input,
+                (progress: ProgressEvent) => {
+                  console.log({ progress });
+                  setProgress(progress?.loaded / progress?.total);
+                }
+              );
+
+              if (!ok) {
+                setUploadVisible(false);
+                return alert("Could not save the listing!");
+              }
+              resetForm();
+            } catch (error) {
+              console.log({ error });
+            }
+          }}
           validationSchema={validationSchema}
         >
           <FormImagePicker name="images" />

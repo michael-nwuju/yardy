@@ -1,18 +1,29 @@
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { Image } from "react-native-expo-image-cache";
+
 import Text from "../components/Text";
 import { colors } from "../constants/colors";
 import Avatar from "../components/Avatar";
-import Screen from "../components/Screen";
 import { useRoute } from "@react-navigation/native";
+import ContactSellerForm from "../components/ContactSellerForm";
 
 const ListingDetailScreen: React.FC = () => {
   const route = useRoute();
+
   const params = route.params as any;
+
   return (
-    <Screen>
+    <KeyboardAvoidingView
+      behavior="position"
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+    >
       <View>
-        <Image style={styles.image} source={{ uri: params.image }} />
+        <Image
+          tint="light"
+          style={styles.image}
+          uri={params.images?.[0]?.url}
+        />
         <View style={styles.detailContainer}>
           <Text style={styles.title}>{params.title}</Text>
           <Text style={styles.price}>{params.price}</Text>
@@ -20,12 +31,13 @@ const ListingDetailScreen: React.FC = () => {
             <Avatar
               title="Michael Nwuju"
               subTitle="2 listings"
-              image={{ uri: "https://picsum.photos/70/70" }}
+              image={{ uri: params.images?.[0]?.thumbnailUrl }}
             />
           </View>
         </View>
+        <ContactSellerForm listing={params} />
       </View>
-    </Screen>
+    </KeyboardAvoidingView>
   );
 };
 
