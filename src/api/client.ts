@@ -3,7 +3,7 @@ import * as cache from "../utilities/cache";
 import { AxiosRequestConfig } from "axios";
 import * as authStorage from "../auth/storage";
 
-export const client = create({ baseURL: "http://192.168.180.5:9000/api" });
+export const client = create({ baseURL: "https://yardy-api.onrender.com/api" });
 
 const get = client.get;
 
